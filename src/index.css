@@ -7,10 +7,109 @@ body {
   width: 100dvw;
   overflow: hidden;
   height: 100dvh;
-  background-image: url("/images/wallpaper.png");
+  background-image: var(--wallpaper);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+/* ===== THEME CSS VARIABLES ===== */
+:root {
+  /* Wallpaper */
+  --wallpaper: url("/images/wallpaper.png");
+
+  /* Background colors - macOS Light */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --bg-tertiary: #e8e8ed;
+  --bg-elevated: #ffffff;
+
+  /* Text colors */
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #86868b;
+
+  /* Border & separator */
+  --border-color: #d2d2d7;
+  --separator-color: rgba(0, 0, 0, 0.1);
+
+  /* Glass effect (frosted) */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-hover: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.5);
+
+  /* Window chrome */
+  --window-bg: #ffffff;
+  --window-header: #f6f6f6;
+  --window-border: #d1d1d6;
+  --window-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.2);
+
+  /* Dock */
+  --dock-bg: rgba(255, 255, 255, 0.25);
+  --dock-border: rgba(255, 255, 255, 0.3);
+
+  /* Accent colors */
+  --accent-blue: #007aff;
+  --accent-red: #ff3b30;
+  --accent-green: #34c759;
+}
+
+/* ===== DARK MODE - macOS Accurate ===== */
+html.dark {
+  /* Wallpaper - use same wallpaper for now (add wallpaper-dark.png for dark version) */
+  --wallpaper: url("/images/wallpaper.png");
+
+  /* Background colors - macOS Dark (deep neutral grays) */
+  --bg-primary: #1c1c1e;
+  --bg-secondary: #2c2c2e;
+  --bg-tertiary: #3a3a3c;
+  --bg-elevated: #2c2c2e;
+
+  /* Text colors */
+  --text-primary: #f5f5f7;
+  --text-secondary: #98989d;
+  --text-tertiary: #6e6e73;
+
+  /* Border & separator */
+  --border-color: #38383a;
+  --separator-color: rgba(255, 255, 255, 0.1);
+
+  /* Glass effect (frosted dark) */
+  --glass-bg: rgba(30, 30, 32, 0.72);
+  --glass-bg-hover: rgba(50, 50, 52, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.1);
+
+  /* Window chrome */
+  --window-bg: #1c1c1e;
+  --window-header: #2c2c2e;
+  --window-border: #3a3a3c;
+  --window-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.5);
+
+  /* Dock */
+  --dock-bg: rgba(30, 30, 32, 0.5);
+  --dock-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark mode - invert navbar icons to white */
+html.dark nav img {
+  filter: invert(1) brightness(2);
+}
+
+/* Smooth theme transition */
+html:not(.reduce-motion) * {
+  transition-property: background-color, border-color, color, fill, stroke, filter;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-out;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  html * {
+    transition: none !important;
+  }
 }
 
 @theme {
@@ -37,7 +136,9 @@ body {
   }
 
   nav {
-    @apply flex justify-between items-center bg-white/50 backdrop-blur-3xl p-2 px-5 select-none;
+    @apply flex justify-between items-center backdrop-blur-3xl p-2 px-5 select-none;
+    background-color: var(--glass-bg);
+    border-bottom: 1px solid var(--glass-border);
 
     div {
       @apply flex items-center max-sm:w-full max-sm:justify-center gap-5;
@@ -52,41 +153,190 @@ body {
 
       p {
         @apply text-sm cursor-pointer hover:underline transition-all;
+        color: var(--text-primary);
       }
     }
 
     time {
-      @apply text-sm font-medium text-black;
+      @apply text-sm font-medium;
+      color: var(--text-primary);
+    }
+
+    p {
+      color: var(--text-primary);
+    }
+
+    /* Icon color - dark icons in light mode, light icons in dark mode */
+    img {
+      transition: filter 0.2s ease;
+    }
+
+    /* Window Dropdown Menu */
+    .nav-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-dropdown-trigger {
+      @apply text-sm cursor-pointer px-2 py-1 rounded-md transition-all;
+      color: var(--text-primary);
+      background: transparent;
+      border: none;
+      font-weight: normal;
+    }
+
+    .nav-dropdown-trigger:hover,
+    .nav-dropdown.open .nav-dropdown-trigger {
+      font-weight: bold;
+    }
+
+    .nav-dropdown-menu {
+      @apply absolute left-0 min-w-[160px];
+      top: 100%;
+      padding-top: 12px;
+      z-index: 99999;
+
+      /* Invisible hover bridge area */
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 12px;
+      }
+    }
+
+    .nav-dropdown-menu-inner {
+      @apply py-1.5 px-1 rounded-lg shadow-2xl;
+      background-color: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      animation: dropdownFade 0.15s ease-out;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 140px;
+    }
+
+    @keyframes dropdownFade {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .nav-dropdown-item {
+      @apply w-full text-left text-[13px] px-2.5 py-1 transition-all cursor-pointer rounded-md;
+      color: var(--text-primary);
+      background: transparent;
+      border: none;
+      display: block;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    /* Dark mode: lighter hover for items */
+    html.dark .nav-dropdown-item:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-dropdown-separator {
+      @apply my-1;
+      height: 1px;
+      margin-left: 4px;
+      margin-right: 4px;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    /* Dark mode: lighter separator */
+    html.dark .nav-dropdown-separator {
+      background-color: rgba(154, 154, 154, 0.2);
     }
   }
 }
 
 @layer components {
+
+  /* Theme toggle icon rotation */
+  .theme-toggle {
+    @apply cursor-pointer;
+  }
+
+  .theme-icon {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .theme-icon.rotate-180 {
+    transform: rotate(180deg);
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .theme-icon {
+      transition: none;
+    }
+  }
+
   .icon {
-    @apply p-1 hover:bg-gray-200 rounded hover:cursor-default;
+    @apply p-1 rounded hover:cursor-default;
+    background-color: transparent;
+  }
+
+  .icon:hover {
+    background-color: var(--bg-tertiary);
   }
 
   #welcome {
-    @apply text-gray-200 flex flex-col justify-center items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none max-sm:h-screen max-sm:w-full max-sm:px-10;
+    @apply flex flex-col justify-center items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none max-sm:h-screen max-sm:w-full max-sm:px-10;
+    color: #ffffff;
+
+    h1 {
+      letter-spacing: 0.05em;
+    }
 
     .small-screen {
-      @apply sm:hidden m-7 bg-red-300/20 backdrop-blur-lg p-3 rounded-md absolute top-10;
+      @apply sm:hidden m-7 backdrop-blur-lg p-3 rounded-md absolute top-10;
+      background-color: rgba(255, 100, 100, 0.1);
 
       p {
-        @apply flex-1 text-[16px] text-center font-roboto text-gray-400;
+        @apply flex-1 text-[16px] text-center font-roboto;
+        color: rgba(255, 255, 255, 0.7);
       }
     }
   }
 
+  /* Dark mode: off-white text for welcome section */
+  html.dark #welcome {
+    color: #e5e5e7;
+  }
+
+  html.dark #welcome .small-screen p {
+    color: rgba(229, 229, 231, 0.7);
+  }
+
   #dock {
-    @apply absolute bottom-5 left-1/2 -translate-x-1/2 z-50 select-none max-sm:hidden;
+    @apply absolute left-1/2 -translate-x-1/2 z-[9999] select-none max-sm:hidden;
 
     .dock-container {
-      @apply bg-white/20 backdrop-blur-md justify-between rounded-2xl p-1.5 flex items-end gap-1.5;
+      @apply backdrop-blur-md justify-between rounded-2xl p-1.5 flex items-end gap-1.5;
+      background-color: var(--dock-bg);
+      border: 1px solid var(--dock-border);
     }
 
     .tooltip {
-      @apply !py-1 !px-3 !w-fit !text-center !text-xs !rounded-md !bg-blue-200 !text-blue-900 !shadow-2xl;
+      @apply !py-1 !px-3 !w-fit !text-center !text-xs !rounded-md !shadow-2xl;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
     }
 
     .dock-icon {
@@ -101,21 +351,490 @@ body {
   #window-controls {
     @apply flex gap-2;
 
-    .close {
-      @apply size-3.5 rounded-full bg-[#ff6157] cursor-pointer;
-    }
-
-    .minimize {
-      @apply size-3.5 rounded-full bg-[#ffc030];
-    }
-
+    /* Common button styles */
+    .close,
+    .minimize,
     .maximize {
-      @apply size-3.5 rounded-full bg-[#2acb42];
+      @apply size-3.5 rounded-full cursor-pointer hover:brightness-90 transition-all relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Close button - red with X icon on hover */
+    .close {
+      background-color: #ff6157;
+    }
+
+    .close::before {
+      content: '✕';
+      font-size: 8px;
+      font-weight: bold;
+      color: #4a0000;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    /* Minimize button - yellow with minus icon on hover */
+    .minimize {
+      background-color: #ffc030;
+    }
+
+    .minimize::before {
+      content: '−';
+      font-size: 12px;
+      font-weight: bold;
+      color: #995700;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      line-height: 1;
+      margin-top: -1px;
+    }
+
+    /* Maximize button - green with expand arrows on hover */
+    .maximize {
+      background-color: #2acb42;
+    }
+
+    .maximize::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M0 0L4 4M10 10L6 6M10 0L6 4M0 10L4 6' stroke='%23006500' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    /* Show icons on hover of window controls container */
+    &:hover .close::before,
+    &:hover .minimize::before,
+    &:hover .maximize::before {
+      opacity: 1;
     }
   }
 
   #window-header {
-    @apply flex items-center justify-between px-4 py-3 rounded-t-lg bg-gray-50 border-b border-gray-200 select-none text-sm text-gray-400;
+    @apply flex items-center justify-between px-4 py-3 rounded-t-lg select-none text-sm;
+    background-color: var(--window-header);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+  }
+
+  /* ===== DARK MODE WINDOW STYLES ===== */
+  /* Dark mode glass background for windows */
+  html.dark .window-animate-open {
+    background-color: var(--window-bg);
+    box-shadow: var(--window-shadow);
+  }
+
+  /* Dark mode text colors for window content */
+  html.dark .window-animate-open .finder-toolbar,
+  html.dark .window-animate-open .finder-content,
+  html.dark .window-animate-open .sidebar,
+  html.dark .window-animate-open>div:last-child {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  /* Dark mode for finder toolbar */
+  html.dark .finder-toolbar {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  html.dark .finder-toolbar span,
+  html.dark .finder-toolbar button {
+    color: var(--text-primary);
+  }
+
+  /* Dark mode for sidebar */
+  html.dark .sidebar {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  html.dark .sidebar h3,
+  html.dark .sidebar span {
+    color: var(--text-primary);
+  }
+
+  html.dark .sidebar li.active {
+    background-color: var(--bg-tertiary) !important;
+  }
+
+  html.dark .sidebar li:hover {
+    background-color: var(--bg-tertiary);
+  }
+
+  /* Dark mode for finder content area */
+  html.dark .finder-content {
+    background-color: var(--bg-primary) !important;
+  }
+
+  html.dark .finder-content p,
+  html.dark .finder-content span {
+    color: var(--text-primary);
+  }
+
+  html.dark .finder-item:hover {
+    background-color: var(--bg-tertiary) !important;
+  }
+
+  /* Dark mode for generic window content */
+  html.dark .window-animate-open *:not(img):not(svg):not(path) {
+    color: var(--text-primary);
+  }
+
+  /* Reset text colors for specific colored elements */
+  html.dark .window-animate-open .text-blue-600,
+  html.dark .window-animate-open .text-green-600,
+  html.dark .window-animate-open .text-orange-600,
+  html.dark .window-animate-open .text-red-600,
+  html.dark .window-animate-open .text-purple-600 {
+    color: inherit;
+  }
+
+  /* Dark mode for window backgrounds using Tailwind bg classes */
+  html.dark .bg-gray-50,
+  html.dark .bg-gray-100,
+  html.dark .bg-white {
+    background-color: var(--bg-primary) !important;
+  }
+
+  html.dark .bg-gray-200 {
+    background-color: var(--bg-tertiary) !important;
+  }
+
+  html.dark .border-gray-200,
+  html.dark .border-gray-100 {
+    border-color: var(--border-color) !important;
+  }
+
+  html.dark .text-gray-700,
+  html.dark .text-gray-600,
+  html.dark .text-gray-500 {
+    color: var(--text-secondary) !important;
+  }
+
+  html.dark .text-gray-400 {
+    color: var(--text-tertiary) !important;
+  }
+
+  html.dark .hover\:bg-gray-100:hover {
+    background-color: var(--bg-tertiary) !important;
+  }
+
+  /* ===== WINDOW CONTAINERS DARK MODE ===== */
+  /* Fix white line issue in maximized windows */
+  html.dark #safari {
+    background-color: var(--bg-primary) !important;
+  }
+
+  html.dark #terminal {
+    background-color: var(--bg-primary) !important;
+  }
+
+  html.dark #contact {
+    background-color: var(--bg-primary) !important;
+  }
+
+  html.dark #resume {
+    background-color: var(--bg-primary) !important;
+  }
+
+  html.dark #projectDetail {
+    background-color: var(--bg-primary) !important;
+  }
+
+  html.dark #photos {
+    background-color: var(--bg-primary) !important;
+  }
+
+  /* Remove bottom padding/margin from all windows */
+  #finder,
+  #photos,
+  #safari,
+  #terminal,
+  #contact,
+  #resume,
+  #projectDetail {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* ===== SAFARI WINDOW DARK MODE ===== */
+  /* Safari toolbar */
+  html.dark .safari-toolbar {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  html.dark .safari-nav-btn {
+    color: var(--text-secondary) !important;
+  }
+
+  html.dark .safari-nav-btn:hover {
+    background-color: var(--bg-tertiary) !important;
+  }
+
+  html.dark .safari-address-bar {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  html.dark .safari-url {
+    color: var(--text-secondary) !important;
+  }
+
+  html.dark .safari-external-btn {
+    color: var(--text-secondary) !important;
+  }
+
+  html.dark .safari-external-btn:hover {
+    background-color: var(--bg-tertiary) !important;
+  }
+
+  /* Safari home screen */
+  html.dark .safari-home {
+    background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary)) !important;
+  }
+
+  html.dark .safari-bookmarks-bar {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  html.dark .safari-bookmarks-label {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* Safari chat area */
+  html.dark .safari-chat-header {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  html.dark .safari-chat-container {
+    background-color: var(--bg-primary) !important;
+  }
+
+  html.dark .safari-chat-bubble.bot .safari-chat-text {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  html.dark .safari-chat-bubble.user .safari-chat-text {
+    color: white !important;
+  }
+
+  html.dark .safari-chat-avatar {
+    color: var(--text-secondary) !important;
+  }
+
+  /* Safari chat input bar */
+  html.dark .safari-chat-input-bar {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  html.dark .safari-chat-input-bar input {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  html.dark .safari-chat-input-bar input::placeholder {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* Safari fallback page */
+  html.dark .safari-fallback {
+    background-color: var(--bg-primary) !important;
+  }
+
+  html.dark .safari-fallback h3 {
+    color: var(--text-primary) !important;
+  }
+
+  html.dark .safari-fallback p {
+    color: var(--text-secondary) !important;
+  }
+
+  /* ===== GALLERY/PHOTOS WINDOW DARK MODE ===== */
+  /* Gallery container */
+  html.dark #photos {
+    background-color: var(--bg-primary) !important;
+  }
+
+  /* Gallery sidebar */
+  html.dark .gallery-sidebar {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  html.dark .gallery-sidebar h2 {
+    color: var(--text-tertiary) !important;
+  }
+
+  html.dark .gallery-sidebar li {
+    color: var(--text-secondary) !important;
+  }
+
+  html.dark .gallery-sidebar li:hover {
+    background-color: var(--bg-tertiary) !important;
+  }
+
+  html.dark .gallery-sidebar li.active {
+    background-color: rgba(59, 130, 246, 0.2) !important;
+    color: #60a5fa !important;
+  }
+
+  html.dark .gallery-sidebar li img {
+    filter: brightness(0) invert(0.8);
+  }
+
+  /* Gallery content area */
+  html.dark .gallery-content {
+    background-color: var(--bg-primary) !important;
+  }
+
+  html.dark .gallery-header {
+    border-color: var(--border-color) !important;
+  }
+
+  html.dark .gallery-header h3 {
+    color: var(--text-primary) !important;
+  }
+
+  html.dark .gallery-header .project-count {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* Project cards */
+  html.dark .project-card {
+    background-color: var(--bg-secondary) !important;
+  }
+
+  html.dark .project-card .project-thumbnail {
+    background-color: var(--bg-tertiary) !important;
+  }
+
+  html.dark .project-card .project-info h4 {
+    color: var(--text-primary) !important;
+  }
+
+  html.dark .project-card .tech-badge {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  /* Empty state */
+  html.dark .empty-state {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* ===== FINDER WINDOW DARK MODE ===== */
+  html.dark #finder {
+    background-color: var(--bg-primary) !important;
+  }
+
+  html.dark #finder .sidebar {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  html.dark #finder .sidebar h3 {
+    color: var(--text-tertiary) !important;
+  }
+
+  html.dark #finder .sidebar li {
+    color: var(--text-secondary) !important;
+  }
+
+  html.dark #finder .sidebar .active {
+    background-color: rgba(59, 130, 246, 0.2) !important;
+    color: #60a5fa !important;
+  }
+
+  html.dark #finder .sidebar .not-active:hover {
+    background-color: var(--bg-tertiary) !important;
+  }
+
+  html.dark #finder .finder-toolbar {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  html.dark #finder .finder-toolbar span {
+    color: var(--text-primary) !important;
+  }
+
+  html.dark #finder .finder-content {
+    background-color: var(--bg-primary) !important;
+  }
+
+  html.dark #finder .finder-item {
+    color: var(--text-primary) !important;
+  }
+
+  html.dark #finder .finder-item:hover {
+    background-color: var(--bg-tertiary) !important;
+  }
+
+  #window-header {
+    @apply flex items-center justify-between px-4 py-3 rounded-t-lg select-none text-sm;
+    background-color: var(--window-header);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+  }
+
+  /* Window open animation - uses scale only to avoid conflicting with position transforms */
+  @keyframes windowOpen {
+    0% {
+      opacity: 0;
+      scale: 0.95;
+    }
+
+    100% {
+      opacity: 1;
+      scale: 1;
+    }
+  }
+
+  .window-animate-open {
+    animation: windowOpen 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* Maximized window styles - macOS style with rounded corners */
+  .window-maximized {
+    @apply shadow-2xl;
+    background-color: var(--window-bg);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .window-maximized #window-header {
+    @apply rounded-t-xl;
+  }
+
+  .window-content-maximized {
+    @apply overflow-auto;
+    height: calc(100% - 48px);
+    /* Subtract header height */
+  }
+
+  /* Dark mode: ensure no white lines in maximized windows */
+  html.dark .window-maximized {
+    background-color: #1c1c1e;
+    border: none;
+    outline: none;
+  }
+
+  html.dark .window-maximized #window-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   #safari {
@@ -173,7 +892,7 @@ body {
       @apply text-sm font-roboto p-5;
 
       .label {
-        @apply flex items-center ms-10 mt-7;
+        @apply flex items-center mt-7;
       }
 
       .content {
@@ -181,11 +900,11 @@ body {
 
         li {
           .check {
-            @apply text-[#00A154] w-5;
+            @apply text-[#FF3B30] w-5;
           }
 
           h3 {
-            @apply font-semibold text-[#00A154] w-32 ms-5;
+            @apply font-semibold text-[#FF3B30] w-32 ms-5;
           }
 
           ul {
@@ -195,7 +914,7 @@ body {
       }
 
       .footnote {
-        @apply text-[#00A154] space-y-1;
+        @apply text-[#FF3B30] space-y-1;
 
         p {
           @apply flex items-center;
@@ -236,8 +955,411 @@ body {
     }
   }
 
+  /* Safari Browser Mode Styles */
+  #safari {
+    @apply w-3xl absolute top-32 left-1/4 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+
+    .safari-browser {
+      @apply flex flex-col;
+      height: 100%;
+    }
+
+    .safari-toolbar {
+      @apply flex items-center gap-3 px-3 py-2 bg-gray-100 border-b border-gray-200;
+    }
+
+    .safari-nav-buttons {
+      @apply flex items-center gap-1;
+    }
+
+    .safari-nav-btn {
+      @apply p-1.5 rounded-md text-gray-500 hover:bg-gray-200 transition-colors;
+
+      &:disabled {
+        @apply opacity-40 cursor-not-allowed;
+      }
+    }
+
+    .safari-address-bar {
+      @apply flex-1 flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg border border-gray-200 text-sm;
+    }
+
+    .safari-url {
+      @apply text-gray-600 truncate text-xs;
+    }
+
+    .safari-external-btn {
+      @apply p-1.5 rounded-md text-gray-500 hover:bg-gray-200 transition-colors;
+    }
+
+    .safari-loading {
+      @apply h-0.5 bg-gray-100 overflow-hidden;
+
+      .safari-loading-bar {
+        @apply h-full w-1/3 bg-blue-500 animate-pulse;
+        animation: loading 1s ease-in-out infinite;
+      }
+    }
+
+    @keyframes loading {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(400%);
+      }
+    }
+
+    .safari-iframe {
+      @apply flex-1 w-full border-none bg-white;
+    }
+
+    .safari-fallback {
+      @apply flex-1 flex flex-col items-center justify-center p-8 text-center bg-gray-50;
+
+      h3 {
+        @apply text-lg font-semibold text-gray-800 mb-2;
+      }
+
+      p {
+        @apply text-sm text-gray-500 mb-6 max-w-sm;
+      }
+    }
+
+    .safari-fallback-btn {
+      @apply inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors;
+    }
+
+    /* Safari Home Screen */
+    .safari-home {
+      @apply flex flex-col bg-gradient-to-b from-gray-50 to-white;
+      min-height: 500px;
+      height: 100%;
+      overflow: hidden;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .safari-section-title {
+      @apply text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4 flex items-center gap-2;
+    }
+
+    /* Safari Bookmarks Bar - Pinned at top */
+    .safari-bookmarks-bar {
+      @apply flex items-center gap-3 px-4 py-2 bg-gray-50 border-b border-gray-100;
+      flex-shrink: 0;
+    }
+
+    .safari-bookmarks-label {
+      @apply text-xs font-medium text-gray-500 uppercase tracking-wide;
+    }
+
+    .safari-bookmarks-tags {
+      @apply flex gap-2 flex-wrap;
+    }
+
+    .safari-bookmark-tag {
+      @apply flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white text-xs font-medium transition-all cursor-pointer;
+      background-color: var(--tag-color, #3b82f6);
+    }
+
+    .safari-bookmark-tag:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+
+    /* Bookmarks Grid */
+    .safari-bookmarks {
+      @apply p-6 border-b border-gray-100;
+    }
+
+    .safari-bookmarks-grid {
+      @apply grid grid-cols-4 gap-4;
+    }
+
+    .safari-bookmark {
+      @apply flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200 cursor-pointer;
+
+      &:hover {
+        @apply bg-gray-100;
+        transform: scale(1.05);
+      }
+
+      &:hover .safari-bookmark-icon {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+
+    .safari-bookmark-icon {
+      @apply w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-200;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .safari-bookmark-label {
+      @apply text-xs text-gray-600 font-medium;
+    }
+
+    /* AI Chat Section */
+    .safari-ai-section {
+      @apply flex-1 flex flex-col p-6;
+    }
+
+    .safari-chat-container {
+      @apply flex-1 overflow-auto space-y-3 mb-4 pr-2;
+    }
+
+    .safari-chat-bubble {
+      @apply flex gap-3 animate-[slideUp_0.3s_ease-out];
+
+      &.user {
+        @apply flex-row-reverse;
+
+        .safari-chat-text {
+          @apply bg-blue-500 text-white rounded-2xl rounded-tr-sm;
+        }
+
+        .safari-chat-avatar {
+          @apply bg-gray-200 text-gray-600;
+        }
+      }
+
+      &.bot {
+        .safari-chat-text {
+          @apply bg-gray-100 text-gray-800 rounded-2xl rounded-tl-sm;
+        }
+
+        .safari-chat-avatar {
+          @apply bg-gradient-to-br from-purple-500 to-blue-500 text-white;
+        }
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .safari-chat-avatar {
+      @apply w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0;
+    }
+
+    .safari-chat-text {
+      @apply px-4 py-2.5 max-w-[80%] text-sm leading-relaxed;
+
+      p {
+        @apply mb-1;
+
+        &:last-child {
+          @apply mb-0;
+        }
+      }
+
+      strong {
+        @apply font-semibold;
+      }
+    }
+
+    .safari-chat-input {
+      @apply flex gap-2 p-2 bg-gray-100 rounded-xl;
+
+      input {
+        @apply flex-1 bg-transparent outline-none text-sm px-3 py-2;
+
+        &::placeholder {
+          @apply text-gray-400;
+        }
+      }
+
+      button {
+        @apply p-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors;
+
+        &:disabled {
+          @apply bg-gray-300 cursor-not-allowed;
+        }
+      }
+    }
+
+    /* Safari Home - Bookmarks Bar */
+    .safari-bookmarks-bar {
+      @apply flex items-center gap-4 px-4 py-3 bg-gray-50 border-b border-gray-200;
+    }
+
+    .safari-bookmarks-label {
+      @apply text-xs font-semibold text-gray-400 uppercase tracking-wide whitespace-nowrap;
+    }
+
+    .safari-bookmarks-tags {
+      @apply flex items-center gap-2 flex-wrap;
+    }
+
+    .safari-bookmark-tag {
+      @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-white text-xs font-medium transition-all duration-200 cursor-pointer;
+      background: var(--tag-color, #6b7280);
+
+      &:hover {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+
+      img {
+        @apply w-4 h-4;
+      }
+
+      span {
+        @apply whitespace-nowrap;
+      }
+    }
+
+    /* Safari Home - Chat Area */
+    .safari-chat-area {
+      @apply flex-1 flex flex-col;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .safari-chat-header {
+      @apply flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 border-b border-gray-100;
+      flex-shrink: 0;
+    }
+
+    .safari-chat-container {
+      @apply space-y-3 p-4;
+      flex: 1;
+      min-height: 0;
+      overflow-y: scroll;
+    }
+
+    /* Safari Home - Input Bar */
+    .safari-chat-input-bar {
+      @apply flex gap-2 p-3 bg-white border-t border-gray-200;
+      flex-shrink: 0;
+
+      input {
+        @apply flex-1 bg-gray-100 border-none outline-none text-sm px-4 py-2.5 rounded-xl;
+
+        &::placeholder {
+          @apply text-gray-400;
+        }
+      }
+
+      button {
+        @apply p-2.5 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors;
+
+        &:disabled {
+          @apply bg-gray-300 cursor-not-allowed;
+        }
+      }
+    }
+  }
+
+  /* Contact Window Styles */
+  #contact {
+    @apply max-w-xl absolute top-60 left-5/12 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
+
+    .contact-window {
+      @apply p-6;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .contact-header {
+      @apply mb-6 text-center;
+
+      h2 {
+        @apply text-xl font-bold text-gray-900 mb-2;
+      }
+
+      p {
+        @apply text-sm text-gray-500;
+      }
+    }
+
+    .contact-grid {
+      @apply space-y-3;
+    }
+
+    .contact-card {
+      @apply flex items-center gap-4 p-4 rounded-xl transition-all duration-200 cursor-pointer border border-transparent;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--card-color) 10%, white) 0%, white 100%);
+
+      &:hover {
+        @apply border-gray-200 shadow-lg;
+        transform: translateX(4px);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+
+    .contact-card-icon {
+      @apply w-12 h-12 rounded-xl flex items-center justify-center;
+      background: var(--card-color);
+    }
+
+    .contact-card-content {
+      @apply flex-1;
+
+      h3 {
+        @apply text-base font-semibold text-gray-900;
+      }
+    }
+
+    .contact-card-url {
+      @apply text-xs text-gray-400 truncate block max-w-[180px];
+    }
+
+    .contact-card-arrow {
+      @apply text-gray-400;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+
+    .safari-home,
+    .contact-window,
+    .safari-chat-bubble,
+    .safari-bookmark,
+    .contact-card {
+      animation: none !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+
   #photos {
-    @apply max-w-3xl absolute top-96 left-1/2 -translate-y-1/2 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
+    @apply max-w-3xl absolute top-40 left-1/4 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
 
     .sidebar {
       @apply w-3/12 flex-none bg-gray-50 border-r border-gray-200 flex flex-col p-5;
@@ -307,17 +1429,18 @@ body {
   }
 
   #finder {
-    @apply absolute w-3xl left-40 top-20 shadow-2xl drop-shadow-2xl overflow-hidden rounded-xl;
+    @apply absolute w-4xl left-40 top-20 shadow-2xl drop-shadow-2xl overflow-hidden rounded-xl bg-white;
 
     .sidebar {
-      @apply w-48 bg-gray-50 border-r border-gray-200 flex flex-col p-5 space-y-3;
+      @apply w-48 min-w-48 bg-gray-50 border-r border-gray-200 flex flex-col p-4 space-y-2 overflow-y-auto;
+      height: 100%;
 
       h3 {
-        @apply text-xs font-medium text-gray-400 mb-1;
+        @apply text-xs font-medium text-gray-400 mb-1 uppercase tracking-wide;
       }
 
       ul {
-        @apply space-y-1;
+        @apply space-y-0.5;
 
         .active {
           @apply bg-blue-100 text-blue-700;
@@ -328,25 +1451,229 @@ body {
         }
 
         li {
-          @apply flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-colors;
+          @apply flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer transition-colors text-sm;
         }
       }
     }
 
-    .content {
-      @apply flex-1 p-8 bg-white max-w-2xl relative;
+    .finder-content {
+      @apply flex-1 p-4 bg-white overflow-auto;
+      height: 100%;
+    }
 
-      li {
-        @apply absolute flex items-center flex-col gap-3;
+    .finder-toolbar {
+      @apply flex items-center justify-between px-4 py-2 bg-gray-100/80 border-b border-gray-200;
+    }
+  }
 
-        img {
-          @apply object-contain object-center size-16 relative group-hover:scale-105;
-        }
+  /* Photos/Gallery Window */
+  #photos {
+    @apply absolute w-4xl left-32 top-24 shadow-2xl drop-shadow-2xl overflow-hidden rounded-xl bg-white;
 
-        p {
-          @apply text-sm text-center font-medium w-40;
+    /* Main flex container needs minimum height */
+    >.flex {
+      min-height: 450px;
+    }
+
+    .gallery-sidebar {
+      @apply w-44 min-w-44 bg-gray-50 border-r border-gray-200 flex flex-col p-4 overflow-y-auto;
+
+      h2 {
+        @apply text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3;
+      }
+
+      ul {
+        @apply space-y-0.5;
+
+        li {
+          @apply flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer transition-all text-sm text-gray-600;
+
+          &:hover {
+            @apply bg-gray-200;
+          }
+
+          &.active {
+            @apply bg-blue-100 text-blue-700;
+          }
+
+          img {
+            @apply w-4 h-4;
+          }
         }
       }
+    }
+
+    .gallery-content {
+      @apply flex-1 p-4 bg-white overflow-auto;
+    }
+
+    .gallery-header {
+      @apply flex items-center justify-between mb-4 pb-2 border-b border-gray-100;
+
+      h3 {
+        @apply text-lg font-semibold text-gray-800;
+      }
+
+      .project-count {
+        @apply text-xs text-gray-400;
+      }
+    }
+
+    .projects-grid {
+      @apply grid grid-cols-3 gap-4 transition-opacity duration-150;
+
+      &.fade-out {
+        @apply opacity-0;
+      }
+
+      &.fade-in {
+        @apply opacity-100;
+      }
+    }
+
+    .project-card {
+      @apply rounded-xl overflow-hidden cursor-pointer transition-all duration-200 bg-gray-50;
+
+      &:hover {
+        @apply shadow-lg scale-[1.03];
+        transform: translateY(-2px) scale(1.03);
+      }
+
+      .project-thumbnail {
+        @apply relative aspect-video overflow-hidden bg-gray-200;
+
+        img {
+          @apply w-full h-full object-cover transition-transform duration-300;
+        }
+
+        .image-count {
+          @apply absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded-full;
+        }
+      }
+
+      .project-info {
+        @apply p-3;
+
+        h4 {
+          @apply text-sm font-medium text-gray-800 mb-1.5 truncate;
+        }
+
+        .tech-badges {
+          @apply flex gap-1 flex-wrap;
+        }
+
+        .tech-badge {
+          @apply text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-gray-600;
+        }
+      }
+    }
+
+    .empty-state {
+      @apply flex items-center justify-center h-48 text-gray-400;
+    }
+  }
+
+  /* Project Detail Window */
+  #projectDetail {
+    @apply absolute w-2xl max-w-4xl left-1/4 top-20 shadow-2xl drop-shadow-2xl overflow-hidden rounded-xl bg-white;
+
+    .project-detail {
+      @apply flex flex-col max-h-[75vh];
+    }
+
+    .carousel {
+      @apply bg-gray-900;
+
+      .carousel-image-container {
+        @apply relative;
+
+        .carousel-image {
+          @apply w-full h-64 object-contain bg-gray-900 transition-opacity duration-300;
+
+          &.animating {
+            @apply opacity-50;
+          }
+        }
+
+        .carousel-arrow {
+          @apply absolute top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-white/40 rounded-full text-white transition-colors backdrop-blur-sm;
+
+          svg {
+            @apply w-5 h-5;
+          }
+
+          &.carousel-arrow-left {
+            @apply left-3;
+          }
+
+          &.carousel-arrow-right {
+            @apply right-3;
+          }
+        }
+      }
+
+      .carousel-dots {
+        @apply flex justify-center gap-2 py-3 bg-gray-900;
+
+        .carousel-dot {
+          @apply w-2 h-2 rounded-full bg-white/30 transition-all duration-200;
+
+          &.active {
+            @apply bg-white w-4;
+          }
+
+          &:hover {
+            @apply bg-white/60;
+          }
+        }
+      }
+    }
+
+    .project-detail-info {
+      @apply p-5 space-y-4;
+
+      .project-detail-title {
+        @apply text-xl font-bold text-gray-900;
+      }
+
+      .project-detail-description {
+        @apply text-sm text-gray-600 leading-relaxed;
+      }
+
+      .project-detail-tech {
+        @apply flex flex-wrap gap-2;
+
+        .tech-badge-lg {
+          @apply text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-700 font-medium;
+        }
+      }
+
+      .project-detail-actions {
+        @apply flex gap-3 pt-2;
+
+        .action-btn {
+          @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200;
+
+          &.action-btn-primary {
+            @apply bg-blue-500 text-white hover:bg-blue-600;
+          }
+
+          &.action-btn-secondary {
+            @apply bg-gray-200 text-gray-700 hover:bg-gray-300;
+          }
+        }
+      }
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+
+    .project-card,
+    .carousel-image,
+    .projects-grid {
+      transition: none !important;
+      transform: none !important;
     }
   }
 

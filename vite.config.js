@@ -13,11 +13,12 @@ export default defineConfig({
         dirname(fileURLToPath(
           import.meta.url
         )
-      ), 'src/components'),
+        ), 'src/components'),
       '#constants': resolve(dirname(fileURLToPath(import.meta.url)), 'src/constants'),
       '#store': resolve(dirname(fileURLToPath(import.meta.url)), 'src/store'),
       '#hoc': resolve(dirname(fileURLToPath(import.meta.url)), 'src/hoc'),
       '#windows': resolve(dirname(fileURLToPath(import.meta.url)), 'src/windows'),
+      '#hooks': resolve(dirname(fileURLToPath(import.meta.url)), 'src/hooks'),
     },
   },
 })
