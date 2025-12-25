@@ -1,0 +1,1 @@
+export { useExternalNavigation } from './useExternalNavigation';

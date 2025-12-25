@@ -38,25 +38,25 @@ const navIcons = [
 const dockApps = [
   {
     id: "finder",
-    name: "Portfolio", // was "Finder"
+    name: "Profile", // was "Portfolio"
     icon: "finder.png",
     canOpen: true,
   },
   {
     id: "safari",
-    name: "Articles", // was "Safari"
+    name: "Browse", // was "Articles"
     icon: "safari.png",
     canOpen: true,
   },
   {
     id: "photos",
-    name: "Gallery", // was "Photos"
+    name: "Showcase", // was "Gallery"
     icon: "photos.png",
     canOpen: true,
   },
   {
     id: "contact",
-    name: "Contact", // or "Get in touch"
+    name: "Connect", // was "Contact"
     icon: "contact.png",
     canOpen: true,
   },
@@ -101,28 +101,28 @@ const blogPosts = [
 
 const techStack = [
   {
-    category: "Frontend",
-    items: ["React.js", "Next.js", "TypeScript"],
+    category: "Language",
+    items: ["Java", "Python", "C++", "JavaScript", "TypeScript"],
   },
   {
-    category: "Mobile",
-    items: ["React Native", "Expo"],
+    category: "Frontend",
+    items: ["React.js", "Next.js"],
   },
   {
     category: "Styling",
-    items: ["Tailwind CSS", "Sass", "CSS"],
+    items: ["Tailwind CSS", "Sass", "CSS", "Bootstrap"],
   },
   {
     category: "Backend",
-    items: ["Node.js", "Express", "NestJS", "Hono"],
+    items: ["Node.js", "Express", "Hono"],
   },
   {
     category: "Database",
     items: ["MongoDB", "PostgreSQL"],
   },
   {
-    category: "Dev Tools",
-    items: ["Git", "GitHub", "Docker"],
+    category: "DevTools",
+    items: ["Git", "GitHub", "Docker", "Maven"],
   },
 ];
 
@@ -210,10 +210,14 @@ export {
   dockApps,
   blogPosts,
   techStack,
-  socials,
   photosLinks,
   gallery,
 };
+
+// Re-export from new constants files
+export { socialLinks, getSocialById, getSocialsByType } from './social.constants';
+export { personalInfo, aiResponses, aiKeywords, detectIntent, AI_INTENTS } from './personal.constants';
+export { projectSnapshots, galleryCategories, getProjectsByCategory, findProjectByName } from './projects.constants';
 
 const WORK_LOCATION = {
   id: 1,
@@ -222,63 +226,54 @@ const WORK_LOCATION = {
   icon: "/icons/work.svg",
   kind: "folder",
   children: [
-    // ▶ Project 1
+    // ▶ Project 1 - DSA Visualizer
     {
       id: 5,
-      name: "Nike Ecommerce Website Application",
+      name: "DSA Visualizer",
       icon: "/images/folder.png",
       kind: "folder",
-      position: "top-10 left-5", // icon position inside Finder
-      windowPosition: "top-[5vh] left-5", // optional: Finder window position
+      position: "top-10 left-5",
+      windowPosition: "top-[5vh] left-5",
       children: [
         {
           id: 1,
-          name: "Nike Project.txt",
+          name: "DSA Visualizer Project.txt",
           icon: "/images/txt.png",
           kind: "file",
           fileType: "txt",
           position: "top-5 left-10",
           description: [
-            "The Nike eCommerce website is a sleek and modern platform designed for shopping the latest Nike collections.",
-            "Instead of a simple online store, it delivers an immersive experience with bold visuals, interactive product displays, and smooth navigation.",
-            "Think of it like walking into a flagship Nike store—but right from your phone or laptop.",
-            "It's built with Next.js and Tailwind, ensuring fast performance, responsive design, and a clean, premium look.",
+            "DSA Visualizer is an interactive platform to visualize data structures and algorithms step-by-step.",
+            "Instead of reading abstract theory, you can watch algorithms come to life with real-time animations.",
+            "Think of it like having a personal tutor—showing you exactly how sorting, searching, and data structures work.",
+            "It's built with React and JavaScript, ensuring smooth animations and an engaging learning experience.",
           ],
         },
         {
           id: 2,
-          name: "nike.com",
+          name: "dsa-visualizer.com",
           icon: "/images/safari.png",
           kind: "file",
           fileType: "url",
-          href: "https://youtu.be/fZdTYswuZjU?si=Awjl-pIst9e09_UU",
+          href: "https://dsa-visualizer-suharshit-singh.vercel.app/",
           position: "top-10 right-20",
         },
         {
           id: 4,
-          name: "nike.png",
+          name: "dsa-visualizer.png",
           icon: "/images/image.png",
           kind: "file",
           fileType: "img",
           position: "top-52 right-80",
-          imageUrl: "/images/project-1.png",
-        },
-        {
-          id: 5,
-          name: "Design.fig",
-          icon: "/images/plain.png",
-          kind: "file",
-          fileType: "fig",
-          href: "https://google.com",
-          position: "top-60 right-20",
+          imageUrl: "/images/dsa/dsaimage1.png",
         },
       ],
     },
 
-    // ▶ Project 2
+    // ▶ Project 2 - PeerLink (Desktop App - No live link)
     {
       id: 6,
-      name: "AI Resume Analyzer",
+      name: "PeerLink",
       icon: "/images/folder.png",
       kind: "folder",
       position: "top-52 right-80",
@@ -286,52 +281,34 @@ const WORK_LOCATION = {
       children: [
         {
           id: 1,
-          name: "AI Resume Analyzer Project.txt",
+          name: "PeerLink Project.txt",
           icon: "/images/txt.png",
           kind: "file",
           fileType: "txt",
           position: "top-5 right-10",
           description: [
-            "AI Resume Analyzer is a smart tool that helps you perfect your resume with instant feedback.",
-            "Instead of guessing what recruiters want, you get AI-powered insights on keywords, formatting, and overall impact.",
-            "Think of it like having a career coach—pointing out strengths, fixing weaknesses, and boosting your chances of landing interviews.",
-            "It's built with Next.js and Tailwind, so it runs fast, looks professional, and works seamlessly on any device.",
+            "PeerLink is a desktop-based peer networking and collaboration application.",
+            "It enables seamless peer-to-peer communication and file sharing between team members.",
+            "Think of it like having a direct line to your collaborators—no complex infrastructure needed.",
+            "It's built with Python and networking protocols for reliable cross-platform communication.",
           ],
         },
         {
-          id: 2,
-          name: "ai-resume-analyzer.com",
-          icon: "/images/safari.png",
-          kind: "file",
-          fileType: "url",
-          href: "https://youtu.be/iYOz165wGkQ?si=R1hs8Legl200m0Cl",
-          position: "top-20 left-20",
-        },
-        {
           id: 4,
-          name: "ai-resume-analyzer.png",
+          name: "peerlink.png",
           icon: "/images/image.png",
           kind: "file",
           fileType: "img",
           position: "top-52 left-80",
-          imageUrl: "/images/project-2.png",
-        },
-        {
-          id: 5,
-          name: "Design.fig",
-          icon: "/images/plain.png",
-          kind: "file",
-          fileType: "fig",
-          href: "https://google.com",
-          position: "top-60 left-5",
+          imageUrl: "/images/peerlink/peerlinkimage1.png",
         },
       ],
     },
 
-    // ▶ Project 3
+    // ▶ Project 3 - NYC Equity Dashboard (No live link)
     {
       id: 7,
-      name: "Food Delivery App",
+      name: "NYC Equity Dashboard",
       icon: "/images/folder.png",
       kind: "folder",
       position: "top-10 left-80",
@@ -339,44 +316,70 @@ const WORK_LOCATION = {
       children: [
         {
           id: 1,
-          name: "Food Delivery App Project.txt",
+          name: "NYC Equity Dashboard Project.txt",
           icon: "/images/txt.png",
           kind: "file",
           fileType: "txt",
           position: "top-5 left-10",
           description: [
-            "Our Food Delivery App is a fast and convenient way to order meals from your favorite restaurants.",
-            "Instead of making calls or waiting in line, you can browse menus, customize orders, and track deliveries in real time.",
-            "Think of it like having your favorite restaurants in your pocket—ready to deliver anytime, anywhere.",
-            "It’s built with React Native, so it works smoothly on both iOS and Android with a clean, modern design.",
+            "NYC Equity Dashboard is a Power BI dashboard analyzing service equity and civic efficiency in New York City.",
+            "It visualizes civic data to identify equity patterns across different communities.",
+            "Think of it like having a bird's eye view of city services—revealing gaps and opportunities for improvement.",
+            "It's built with Power BI and SQL for advanced data visualization and analysis.",
           ],
         },
         {
-          id: 2,
-          name: "food-delivery-app.com",
-          icon: "/images/safari.png",
-          kind: "file",
-          fileType: "url",
-          href: "https://youtu.be/LKrX390fJMw?si=cExkuVhf2DTV9G2-",
-          position: "top-10 right-20",
-        },
-        {
           id: 4,
-          name: "food-delivery-app.png",
+          name: "nyc-equity.png",
           icon: "/images/image.png",
           kind: "file",
           fileType: "img",
           position: "top-52 right-80",
-          imageUrl: "/images/project-3.png",
+          imageUrl: "/images/nyc equity/nycimage1.png",
+        },
+      ],
+    },
+
+    // ▶ Project 4 - Student Behavioral Drift Detection
+    {
+      id: 8,
+      name: "Student Behavioral Drift Detection",
+      icon: "/images/folder.png",
+      kind: "folder",
+      position: "top-60 right-20",
+      windowPosition: "top-[45vh] left-7",
+      children: [
+        {
+          id: 1,
+          name: "Student Drift Project.txt",
+          icon: "/images/txt.png",
+          kind: "file",
+          fileType: "txt",
+          position: "top-5 left-10",
+          description: [
+            "Student Behavioral Drift Detection is a predictive analytics project using Python and Machine Learning.",
+            "It identifies students who may be experiencing behavioral changes that affect their academic performance.",
+            "Think of it like an early warning system—enabling timely intervention and support for students.",
+            "It's built with Python and ML algorithms for accurate drift detection and prediction.",
+          ],
         },
         {
-          id: 5,
-          name: "Design.fig",
-          icon: "/images/plain.png",
+          id: 2,
+          name: "student-drift.com",
+          icon: "/images/safari.png",
           kind: "file",
-          fileType: "fig",
-          href: "https://google.com",
-          position: "top-60 right-20",
+          fileType: "url",
+          href: "https://student-behavioral-drift-detection.onrender.com/",
+          position: "top-10 right-20",
+        },
+        {
+          id: 4,
+          name: "student-drift.png",
+          icon: "/images/image.png",
+          kind: "file",
+          fileType: "img",
+          position: "top-52 right-80",
+          imageUrl: "/images/student behavioural drift/studentimage1.png",
         },
       ],
     },
@@ -501,6 +504,7 @@ const WINDOW_CONFIG = {
   terminal: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
   txtfile: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
   imgfile: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
+  projectDetail: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
 };
 
 export { INITIAL_Z_INDEX, WINDOW_CONFIG };
