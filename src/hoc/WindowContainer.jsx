@@ -302,7 +302,7 @@ const WindowContainer = ({
             </div>
 
             {/* Window Content */}
-            <div className={isMaximized ? 'window-content-maximized' : ''}>
+            <div className={`window-content-wrapper ${isMaximized ? 'window-content-maximized' : ''}`}>
                 {children}
             </div>
         </div>

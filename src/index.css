@@ -807,6 +807,16 @@ html:not(.reduce-motion) * {
     animation: windowOpen 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
+  .window-content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
   /* Maximized window styles - macOS style with rounded corners */
   .window-maximized {
     @apply shadow-2xl;
@@ -821,7 +831,7 @@ html:not(.reduce-motion) * {
   }
 
   .window-content-maximized {
-    @apply overflow-auto;
+    @apply flex flex-col overflow-hidden;
     height: calc(100% - 48px);
     /* Subtract header height */
   }
@@ -928,7 +938,7 @@ html:not(.reduce-motion) * {
   }
 
   #contact {
-    @apply max-w-2xl absolute top-60 left-5/12 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
+    @apply max-w-2xl absolute top-14 left-5 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
 
     h2 {
       @apply font-bold text-sm text-center w-full;
@@ -957,14 +967,15 @@ html:not(.reduce-motion) * {
 
   /* Safari Browser Mode Styles */
   #safari {
-    @apply w-3xl absolute top-32 left-1/4 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
+    @apply w-3xl absolute top-14 left-5 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
     display: flex;
     flex-direction: column;
     height: 500px;
 
     .safari-browser {
       @apply flex flex-col;
-      height: 100%;
+      flex: 1;
+      min-height: 0;
     }
 
     .safari-toolbar {
@@ -1037,7 +1048,9 @@ html:not(.reduce-motion) * {
     /* Safari Home Screen */
     .safari-home {
       @apply flex flex-col bg-gradient-to-b from-gray-50 to-white;
-      min-height: 500px;
+      flex: 1;
+      min-height: 0;
+      max-height: 100%;
       height: 100%;
       overflow: hidden;
       animation: fadeIn 0.3s ease-out;
@@ -1119,12 +1132,21 @@ html:not(.reduce-motion) * {
     }
 
     /* AI Chat Section */
-    .safari-ai-section {
-      @apply flex-1 flex flex-col p-6;
+    .safari-ai-section,
+    .safari-chat-area {
+      @apply flex-1 flex flex-col;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .safari-chat-header {
+      @apply flex items-center gap-2 px-4 py-2 bg-gray-50 border-b border-gray-100 text-sm font-medium text-gray-700;
+      flex-shrink: 0;
     }
 
     .safari-chat-container {
       @apply flex-1 overflow-auto space-y-3 mb-4 pr-2;
+      min-height: 0;
     }
 
     .safari-chat-bubble {
@@ -1285,7 +1307,7 @@ html:not(.reduce-motion) * {
 
   /* Contact Window Styles */
   #contact {
-    @apply max-w-xl absolute top-60 left-5/12 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
+    @apply max-w-xl absolute top-14 left-5 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
 
     .contact-window {
       @apply p-6;
@@ -1359,7 +1381,7 @@ html:not(.reduce-motion) * {
   }
 
   #photos {
-    @apply max-w-3xl absolute top-40 left-1/4 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
+    @apply max-w-3xl absolute top-14 left-5 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
 
     .sidebar {
       @apply w-3/12 flex-none bg-gray-50 border-r border-gray-200 flex flex-col p-5;
@@ -1419,7 +1441,7 @@ html:not(.reduce-motion) * {
   }
 
   #resume {
-    @apply w-fit h-fit absolute top-16 left-7/12 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
+    @apply w-fit h-fit absolute top-14 left-5 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
 
     #window-header {
       h2 {
@@ -1429,7 +1451,7 @@ html:not(.reduce-motion) * {
   }
 
   #finder {
-    @apply absolute w-4xl left-40 top-20 shadow-2xl drop-shadow-2xl overflow-hidden rounded-xl bg-white;
+    @apply absolute w-4xl top-14 left-5 shadow-2xl drop-shadow-2xl overflow-hidden rounded-xl bg-white;
 
     .sidebar {
       @apply w-48 min-w-48 bg-gray-50 border-r border-gray-200 flex flex-col p-4 space-y-2 overflow-y-auto;
@@ -1468,7 +1490,7 @@ html:not(.reduce-motion) * {
 
   /* Photos/Gallery Window */
   #photos {
-    @apply absolute w-4xl left-32 top-24 shadow-2xl drop-shadow-2xl overflow-hidden rounded-xl bg-white;
+    @apply absolute w-4xl top-14 left-5 shadow-2xl drop-shadow-2xl overflow-hidden rounded-xl bg-white;
 
     /* Main flex container needs minimum height */
     >.flex {
@@ -1573,9 +1595,14 @@ html:not(.reduce-motion) * {
     }
   }
 
+  /* Terminal Window */
+  #terminal {
+    @apply absolute w-3xl top-14 left-5 shadow-2xl drop-shadow-2xl overflow-hidden rounded-xl bg-black text-white border border-gray-700;
+  }
+
   /* Project Detail Window */
   #projectDetail {
-    @apply absolute w-2xl max-w-4xl left-1/4 top-20 shadow-2xl drop-shadow-2xl overflow-hidden rounded-xl bg-white;
+    @apply absolute w-2xl max-w-4xl top-14 left-5 shadow-2xl drop-shadow-2xl overflow-hidden rounded-xl bg-white;
 
     .project-detail {
       @apply flex flex-col max-h-[75vh];
