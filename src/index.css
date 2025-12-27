@@ -130,6 +130,53 @@ html:not(.reduce-motion) * {
   @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
 }
 
+/* Keyframes - Moved to root to avoid nesting errors */
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @layer base {
   main {
     @apply w-dvw h-dvh overflow-hidden;
@@ -221,17 +268,7 @@ html:not(.reduce-motion) * {
       min-width: 140px;
     }
 
-    @keyframes dropdownFade {
-      from {
-        opacity: 0;
-        transform: translateY(-4px);
-      }
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
 
     .nav-dropdown-item {
       @apply w-full text-left text-[13px] px-2.5 py-1 transition-all cursor-pointer rounded-md;
@@ -1015,15 +1052,7 @@ html:not(.reduce-motion) * {
       }
     }
 
-    @keyframes loading {
-      0% {
-        transform: translateX(-100%);
-      }
 
-      100% {
-        transform: translateX(400%);
-      }
-    }
 
     .safari-iframe {
       @apply flex-1 w-full border-none bg-white;
@@ -1056,17 +1085,7 @@ html:not(.reduce-motion) * {
       animation: fadeIn 0.3s ease-out;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
 
     .safari-section-title {
       @apply text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4 flex items-center gap-2;
@@ -1175,17 +1194,7 @@ html:not(.reduce-motion) * {
       }
     }
 
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
 
     .safari-chat-avatar {
       @apply w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0;
