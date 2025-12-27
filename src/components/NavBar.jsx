@@ -51,8 +51,8 @@ const NavBar = () => {
 
     return (
         <nav>
-            <div>
-                <img src="/images/logo.svg" alt="Logo" />
+            <div className="flex items-center gap-x-3">
+                <img src="/images/logo.svg" alt="Logo" className="w-5 h-5" />
                 <p className="font-bold">Suharshit's Portfolio</p>
 
                 {/* Window Dropdown */}
@@ -86,8 +86,8 @@ const NavBar = () => {
                     )}
                 </div>
             </div>
-            <div>
-                <ul>
+            <div className="flex items-center gap-x-3">
+                <ul className="flex items-center gap-x-3">
                     {navIcons.map(({ id, img }) => (
                         <li
                             key={id}
@@ -96,7 +96,7 @@ const NavBar = () => {
                         >
                             <img
                                 src={img}
-                                className={`icon-hover ${id === 4 ? 'theme-icon' : ''} ${id === 4 && theme === 'dark' ? 'rotate-180' : ''}`}
+                                className={`w-5 h-5 icon-hover ${id === 4 ? 'theme-icon' : ''} ${id === 4 && theme === 'dark' ? 'rotate-180' : ''}`}
                                 alt={`icon-${id}`}
                             />
                         </li>
