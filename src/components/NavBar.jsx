@@ -50,7 +50,7 @@ const NavBar = () => {
     };
 
     return (
-        <nav>
+        <nav className="flex justify-between items-center w-full px-5 py-2 select-none relative z-[99999] backdrop-blur-3xl bg-[var(--glass-bg)] border-b border-[var(--glass-border)] h-12">
             <div className="flex items-center gap-x-3">
                 <img src="/images/logo.svg" alt="Logo" className="w-5 h-5" />
                 <p className="font-bold">Suharshit's Portfolio</p>
