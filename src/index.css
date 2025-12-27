@@ -136,7 +136,7 @@ html:not(.reduce-motion) * {
   }
 
   nav {
-    @apply flex justify-between items-center backdrop-blur-3xl p-2 px-5 select-none;
+    @apply flex justify-between items-center backdrop-blur-3xl p-2 px-5 select-none relative z-[99999] w-full h-12;
     background-color: var(--glass-bg);
     border-bottom: 1px solid var(--glass-border);
 
